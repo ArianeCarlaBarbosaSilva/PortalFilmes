@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Portal de Filmes</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://kit.fontawesome.com/5d5ddc73af.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <main class="container main">
+        <section class="row noticias">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="tit_lancamentos"><strong>Tudo sobre os atores</strong></h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-columns" id="lista_Atores">
+                            <div class="card mb-3" style="max-width: 540px;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <img src="https://source.unsplash.com/random/100x150?sig=9" class="card-img" alt="Imagem">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card title</h5>
+                                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-3" style="max-width: 540px;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <img src="https://source.unsplash.com/random/100x150?sig=9" class="card-img" alt="Imagem">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card title</h5>
+                                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+    </main>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
+    </script>
+    <script>
+        // Função para direcionar o filme selecionado 
+        // para a página de detalhes
+        function atoresDetalhes(id) {
+            localStorage.removeItem('atorID');
+            localStorage.setItem('atorID', id);
+            window.location = 'detalhesAtores.html';
+            return false; //parar a funcao depois que abrirmos a pagina detalhes
+        }
+
+        $(document).ready(function() {
+            //Executar requisição AJAX
+            $.ajax({
+                    // Passar a URL ENDPOINT BASE + /person/popular
+                    url: TMDB_ENDPOINT_BASE + '/person/popular',
+                    data: {
+                        api_key: 'c886ee4b91c582c6febb99b18f7c920f',
+                        language: 'pt-BR'
+                    }
+                })
+                // Receber o JSON
+                .done(function(data) {
+                    console.log(data);
+                    let codigo = '';
+
+                    // Montar os cards
+                    for (i = 0; i < data.results.length; i++) {
+
+                        // Concatenar o código do Card com os dados do JSON
+                        let id = data.results[i].id;
+                        let nome = data.results[i].name;
+                        let imagem = 'https://image.tmdb.org/t/p/w500' + data.results[i].profile_path;
+                        let popularidade = data.results[i].popularity;
+                        let estilo = data.results[i].known_for_department;
+                        let trabalhos = '';
+
+                        if (data.results[i].known_for != null && data.results[i].known_for.length > 0) {
+                            for (let x = 0; x < data.results[i].known_for.length; x++) {
+                                if (data.results[i].known_for[x].title != undefined) {
+                                    trabalhos += data.results[i].known_for[x].title + '<br>';
+                                }
+                            }
+                        }
+
+                        //Montar conteudo HTML para exibir todos os destaques na pagina destaques
+                        codigo += `<div class="card mb-3" style="max-width: 540px;">
+                                    <div class="row no-gutters">
+                                        <div class="col-md-4">
+                                            <a href="#" onclick="atoresDetalhes(${id})"><img src="${imagem}" class="card-img" alt="Imagem"></a>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${nome}</h5>    
+                                                <a href="#" onclick="atoresDetalhes(${id})" class="btn btn-ligth btn_atores">${trabalhos}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                    }
+                    // Repassar os cards para a página
+                    $('#lista_Atores').html(codigo);
+                })
+                .fail(function() {
+                    console.log('Pagina atores.html - requisição AJAX falhou');
+                });
+        });
+    </script>
+</body>
+
+</html>

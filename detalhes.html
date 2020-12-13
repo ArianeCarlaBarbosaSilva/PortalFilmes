@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Portal de Filmes</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://kit.fontawesome.com/5d5ddc73af.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <header class="container header">
+        <div class="row">
+            <div class="col-12 header_area">
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark container_nav">
+
+                    <a class="navbar-brand" href="index.html">
+                        <img src="img/logo.png" width="140" height="70" alt="" loading="lazy">
+                    </a>
+
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container main">
+
+        <!--Filme em detalhes-->
+        <section class="row" id="detalhesFilme">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                <div class="card">
+                    <img src="" class="card-img-top" alt="Imagem vazia">
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="row">
+                    <div class="well clearfix">
+                        <h1 id="tit_filme_detalhes"><strong>Meu filme</strong></h1>
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Sinopse: </strong>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis, culpa?</li>
+                            <li class="list-group-item"><strong>Estréia: </strong>01/01/2020</li>
+                            <li class="list-group-item"><strong>Avaliação: </strong>5.5</li>
+                            <li class="list-group-item"><strong>Idioma: </strong>Português</li>
+                            <li class="list-group-item"><strong>País origem: </strong>Brasil</li>
+                            <li class="list-group-item"><strong>Status: </strong>Em gravação</li>`;
+                            <li class="list-group-item"><strong>Gênero: </strong>Drama | Comédia | Ação</li>
+                            <li class="list-group-item"><strong>Home page: </strong>https://www.pucminas.br</li>
+                        </ul>
+                        <a href="#" target="blank" class="btn btn-success">Homepage do filme</a>
+                        <hr>
+                        <!--Videos disponíveis para esse filme-->
+                        <div class="row" id="videosFilme">
+                            <a href="https://www.youtube.com/embed/OjqewZT0r68" target="blank" class="btn btn-dark">Trailer</a>
+                            <span>&nbsp</span>
+                        </div>
+                        <hr>
+                        <a href="index.html" class="btn btn-dark">Voltar</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+
+    <footer class="container footer">
+
+        <div class="row">
+
+            <div class="col-12 col-sm-12 col-md-10 col-lg-10 footer_area">
+                Copyright 2020 - Disciplina de Desenvolvimento de Interfaces Web - <strong>ICEI PUC Minas</strong>
+
+            </div>
+            <div class="col-12 col-sm-12 col-md-2 col-lg-2 logo_footer">
+                <a href="index.html">
+                    <img src="img/logo.png" class="img-responsive" width="140" height="70" alt="" loading="lazy">
+                </a>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
+    </script>
+
+    <script>
+        const TMDB_ENDPOINT_BASE = 'https://api.themoviedb.org/3';
+        const API_KEY = 'c886ee4b91c582c6febb99b18f7c920f';
+
+        function mostraFilme() {
+            var codigoHTML = "";
+            var filmeID = localStorage.getItem('filmeID');
+
+            //Executar requisição AJAX para obter detalhes do filme
+            $.ajax({
+                    // Passar a URL ENDPOINT BASE + /movie/{movie_id}
+                    url: TMDB_ENDPOINT_BASE + '/movie/' + filmeID,
+                    data: {
+                        api_key: 'c886ee4b91c582c6febb99b18f7c920f',
+                        language: 'pt-BR'
+                    }
+                })
+                // Receber o JSON
+                .done(function(filme) {
+
+                    // Concatenar o código HTML com os dados do JSON
+                    let id = filme.id;
+                    let titulo = filme.title;
+                    let imagem = filme.poster_path != null ? 'https://image.tmdb.org/t/p/w500' + filme.poster_path : './img/logo.png';
+                    let descricao = filme.overview;
+                    let avaliacao = filme.vote_average;
+                    let estreia = filme.release_date;
+                    let paisOrigem = filme.production_countries.length > 0 ? filme.production_countries[0].name : "";
+                    let idioma = filme.spoken_languages.length > 0 ? filme.spoken_languages[0].name : "";
+
+                    //Montar conteudo HTML para exibir todos os destaques na pagina destaques
+                    codigoHTML = `<div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="card">
+                                                <img src="${imagem}" class="card-img-top" alt="${titulo}">
+                                            </div>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                                        <div class="row">
+                                            <div class="well clearfix">
+                                                <h1 id="tit_filme_detalhes"><strong>${titulo}</strong></h1>
+                                                <ul class="list-group">
+                                                    <li class="list-group-item"><strong>Sinopse: </strong>${filme.overview}</li>
+                                                    <li class="list-group-item"><strong>Estréia: </strong>${filme.release_date}</li>
+                                                    <li class="list-group-item"><strong>Avaliação: </strong>${filme.vote_average}</li>
+                                                    <li class="list-group-item"><strong>Idioma: </strong>${idioma}</li>
+                                                    <li class="list-group-item"><strong>País origem: </strong>${paisOrigem}</li>
+                                                    <li class="list-group-item"><strong>Status: </strong>${filme.status}</li>`;
+
+                    let categorias = '';
+                    for (let j = 0; j < filme.genres.length - 1; j++) {
+                        categorias += filme.genres[j].name + ' | ';
+                    }
+                    if (filme.genres.length > 0) categorias += filme.genres[filme.genres.length - 1].name;
+
+                    codigoHTML += `<li class="list-group-item"><strong>Gênero: </strong>${categorias}</li>
+                                                <li class="list-group-item"><strong>Home page: </strong>${filme.homepage}</li>
+                                            </ul>
+                                            <hr>`;
+
+                    if (filme.homepage != null && filme.homepage != "") {
+                        codigoHTML += `<a href="${filme.homepage}" target="blank" class="btn btn-success">Homepage do filme</a>
+                                        <hr>`;
+                    }
+
+                    codigoHTML += ` <div class="row" id="videosFilme">
+                                        <a href="detalhes.html" target="blank" class="btn btn-info">Teste</a>
+                                    </div>
+                                    <hr>
+                                    <a href="index.html" class="btn btn-dark">Voltar</a>`;
+                    // Repassar os cards para a página
+                    $('#detalhesFilme').html(codigoHTML);
+                });
+
+        }
+
+        function buscaVideos() {
+
+            var filmeID = localStorage.getItem('filmeID');
+            console.log('Pagina detalhes videos:' + filmeID);
+
+            //Executar requisição AJAX para obter videos do filme
+            $.ajax({
+                    // Passar a URL ENDPOINT BASE + /movie/{movie_id}/videos
+                    url: TMDB_ENDPOINT_BASE + '/movie/' + filmeID + '/videos',
+                    data: {
+                        api_key: 'c886ee4b91c582c6febb99b18f7c920f'
+                    }
+                })
+                // Receber o JSON
+                .done(function(video) {
+                    if (video != null && video.results != null && video.results.length > 0) {
+                        console.log(video);
+                        let codHTML = '';
+                        for (let k = 0; k < video.results.length; k++) {
+                            codHTML += `<a href="https://www.youtube.com/embed/${video.results[k].key}" target="blank" class="btn btn-info">${video.results[k].type}</a>
+                                        <span>&nbsp</span>`;
+                        }
+
+                        console.log('Depois do for: ' + codHTML);
+                        // Repassar o HTML gerado para a página
+                        $('#videosFilme').html(codHTML);
+                        console.log('Final:' + codHTML);
+                    }
+                })
+                .fail(function() {
+                    console.log('Requisicao busca video falhou');
+                });
+        }
+        $(document).ready(function() {
+            mostraFilme();
+            buscaVideos();
+        });
+    </script>
+
+</body>
+
+</html>
